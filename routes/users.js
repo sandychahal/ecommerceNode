@@ -205,6 +205,7 @@ router.post('/login', (req, res) => {
         lname: user.lname,
         email: user.email,
         mobile: user.mobile,
+        
       },
     })
   })

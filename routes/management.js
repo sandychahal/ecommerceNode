@@ -4,6 +4,8 @@ const db = require('../config/database')
 const md5 = require('md5')
 const jwt = require('jsonwebtoken')
 const authenticateToken = require('../middlewares/authenticateToken')
+const verifyNumber = require('../middlewares/verifyNumber')
+const verifyEmail = require('../middlewares/verifyEmail')
 
 const JWT_SECRET = 'your_secret_key'
 
@@ -57,9 +59,7 @@ router.post('/login', (req, res) => {
   // Query to find the user by email
   const query = 'SELECT * FROM management WHERE email = ?'
 
-
   db.query(query, email, (err, results) => {
-    
     if (err) {
       console.error('Error querying user:', err)
       return res.status(500).json({ error: 'Internal server error' })
@@ -70,6 +70,7 @@ router.post('/login', (req, res) => {
     }
     // console.log(results)
     const user = results[0]
+    console.log(user)
     const hashedPasskey = md5(passkey)
 
     // Compare the provided passkey with the stored passkey
@@ -79,7 +80,7 @@ router.post('/login', (req, res) => {
 
     // Authentication successful, generate a JWT token
     const token = jwt.sign(
-      { id: user.id, email: user.email },
+      { id: user.m_id, email: user.email },
       JWT_SECRET,
       { expiresIn: '1h' } // Token expires in 1 hour
     )
@@ -88,18 +89,66 @@ router.post('/login', (req, res) => {
     return res.status(200).json({
       token,
       user: {
-        id: user.id,
+        id: user.m_id,
         fname: user.fname,
         lname: user.lname,
         email: user.email,
         mobile: user.mobile,
+        picture: user.pfp,
       },
     })
   })
 })
 
-router.get('/protected', authenticateToken, (req, res) => {
-  res.send('This is a protected route')
+router.get('/profile', authenticateToken, (req, res) => {
+  const userId = Number(req.user.id, 10)
+
+  // Query to get user data from the management table
+  const query =
+    'SELECT m_id, fname, lname, email, status, role, pfp FROM management WHERE m_id = ?'
+
+  db.query(query, [userId], (err, results) => {
+    if (err) {
+      console.error('Error querying user data:', err)
+      return res.status(500).json({ error: 'Internal server error' })
+    }
+
+    if (results.length === 0) {
+      return res.status(404).json({ error: 'User not found' })
+    }
+
+    const user = results[0]
+    res.json(user)
+  })
+})
+
+router.put('/profile', authenticateToken, (req, res) => {
+  const userId = Number(req.user.id);
+  const { fname, lname, status, role, pfp , email} = req.body
+
+  // Validate incoming data
+  if (!fname || !lname || !status || !role || !pfp || !email) {
+    return res.status(400).json({ error: 'All fields are required' })
+  }
+
+  const query = `
+    UPDATE management 
+    SET fname = ?, lname = ?, status = ?, role = ?, pfp = ?, email = ?
+    WHERE m_id = ?
+  `
+
+  db.query(query, [fname, lname, status, role, pfp, email, userId], (err, results) => {
+    if (err) {
+      console.error('Error updating user data:', err)
+      return res.status(500).json({ error: 'Internal server error' })
+    }
+
+    if (results.affectedRows === 0) {
+      return res.status(404).json({ error: 'User not found' })
+    }
+
+    res.json({ message: 'Profile updated successfully' })
+  })
 })
 
 module.exports = router
