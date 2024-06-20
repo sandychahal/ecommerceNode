@@ -4,12 +4,11 @@ const db = require('../config/database')
 const md5 = require('md5')
 const jwt = require('jsonwebtoken')
 const authenticateToken = require('../middlewares/authenticateToken')
-const verifyNumber = require('../middlewares/verifyNumber')
 const verifyEmail = require('../middlewares/verifyEmail')
 
 const JWT_SECRET = 'your_secret_key'
 
-router.post('/register', (req, res) => {
+router.post('/register', verifyEmail, (req, res) => {
   const { fname, lname, email, passkey, role } = req.body
 
   if (!fname || !lname || !email || !passkey || !role) {

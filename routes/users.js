@@ -4,32 +4,34 @@ const db = require('../config/database')
 const md5 = require('md5')
 const jwt = require('jsonwebtoken')
 const authenticateToken = require('../middlewares/authenticateToken')
+const verifyNumber = require('../middlewares/verifyNumber')
+const verifyEmail = require('../middlewares/verifyEmail')
 
 const JWT_SECRET = 'your_secret_key'
 
 // Create a new user
-router.post('/', (req, res) => {
-  const { fname, lname, email, passkey, mobile } = req.body
+// router.post('/', (req, res) => {
+//   const { fname, lname, email, passkey, mobile } = req.body
 
-  if (!fname || !lname || !email || !passkey || !mobile) {
-    return res.status(400).json({ error: 'All fields are required' })
-  }
+//   if (!fname || !lname || !email || !passkey || !mobile) {
+//     return res.status(400).json({ error: 'All fields are required' })
+//   }
 
-  const query =
-    'INSERT INTO users (fname, lname, email, passkey, mobile) VALUES (?, ?, ?, ?, ?)'
-  const values = [fname, lname, email, passkey, mobile]
+//   const query =
+//     'INSERT INTO users (fname, lname, email, passkey, mobile) VALUES (?, ?, ?, ?, ?)'
+//   const values = [fname, lname, email, passkey, mobile]
 
-  db.query(query, values, (err, results) => {
-    if (err) {
-      console.error('Error inserting user:', err)
-      res.status(500).json({ error: 'Internal server error' })
-    } else {
-      res
-        .status(201)
-        .json({ id: results.insertId, fname, lname, email, mobile })
-    }
-  })
-})
+//   db.query(query, values, (err, results) => {
+//     if (err) {
+//       console.error('Error inserting user:', err)
+//       res.status(500).json({ error: 'Internal server error' })
+//     } else {
+//       res
+//         .status(201)
+//         .json({ id: results.insertId, fname, lname, email, mobile })
+//     }
+//   })
+// })
 
 // // Get all users
 // router.get('/', (req, res) => {
@@ -118,7 +120,7 @@ router.post('/', (req, res) => {
 
 // const md5 = require('md5') // Make sure you have md5 library installed
 
-router.post('/register', (req, res) => {
+router.post('/register',verifyNumber, verifyEmail, (req, res) => {
   const { fname, lname, email, passkey, mobile } = req.body
 
   if (!fname || !lname || !email || !passkey || !mobile) {

@@ -1,15 +1,15 @@
 // middleware/verifyPhoneNumber.js
 
-function isValidPhoneNumber(phoneNumber) {
+function isValidPhoneNumber(mobile) {
     // Simple regex for validating phone numbers
-    const phoneRegex = /^\+?[1-9]\d{1,14}$/;
-    return phoneRegex.test(phoneNumber);
+    const phoneRegex =  /^\d{10}$/;
+    return phoneRegex.test(mobile);
   }
   
   function verifyNumber(req, res, next) {
-    const { phoneNumber } = req.body;
+    const { mobile } = req.body;
   
-    if (!phoneNumber || !isValidPhoneNumber(phoneNumber)) {
+    if (!mobile || !isValidPhoneNumber(mobile)) {
       return res.status(400).json({ error: 'Invalid phone number' });
     }
   
