@@ -191,7 +191,7 @@ router.post('/login', (req, res) => {
 
     // Authentication successful, generate a JWT token
     const token = jwt.sign(
-      { id: user.id, email: user.email },
+      { id: user.u_id, email: user.email },
       JWT_SECRET,
       { expiresIn: '1h' } // Token expires in 1 hour
     )
@@ -200,7 +200,7 @@ router.post('/login', (req, res) => {
     return res.status(200).json({
       token,
       user: {
-        id: user.id,
+        id: user.u_id,
         fname: user.fname,
         lname: user.lname,
         email: user.email,
@@ -211,8 +211,56 @@ router.post('/login', (req, res) => {
   })
 })
 
-router.get('/protected', authenticateToken, (req, res) => {
-  res.send('This is a protected route')
+router.get('/profile', authenticateToken, (req, res) => {
+  const userId = Number(req.user.id, 10)
+
+  // Query to get user data from the management table
+  const query =
+    'SELECT m_id, fname, lname, email, status, mobile, pfp FROM users WHERE u_id = ?'
+
+  db.query(query, [userId], (err, results) => {
+    if (err) {
+      console.error('Error querying user data:', err)
+      return res.status(500).json({ error: 'Internal server error' })
+    }
+
+    if (results.length === 0) {
+      return res.status(404).json({ error: 'User not found' })
+    }
+
+    const user = results[0]
+    res.json(user)
+  })
 })
+
+router.put('/profile', authenticateToken, (req, res) => {
+  const userId = Number(req.user.id);
+  const { fname, lname, status, mobile, pfp , email} = req.body
+
+  // Validate incoming data
+  if (!fname || !lname || !status || !mobile || !pfp || !email) {
+    return res.status(400).json({ error: 'All fields are required' })
+  }
+
+  const query = `
+    UPDATE users 
+    SET fname = ?, lname = ?, status = ?, role = ?, pfp = ?, email = ?
+    WHERE u_id = ?
+  `
+
+  db.query(query, [fname, lname, status, mobile, pfp, email, userId], (err, results) => {
+    if (err) {
+      console.error('Error updating user data:', err)
+      return res.status(500).json({ error: 'Internal server error' })
+    }
+
+    if (results.affectedRows === 0) {
+      return res.status(404).json({ error: 'User not found' })
+    }
+
+    res.json({ message: 'Profile updated successfully' })
+  })
+})
+
 
 module.exports = router
