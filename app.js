@@ -2,7 +2,7 @@ import express from 'express';
 import dotenv from 'dotenv';
 import authRoutes from './routes/authRoutes.js';
 import userRoutes from './routes/userRoutes.js';
-import { dbConnect } from './config/dbConfig.js';
+import { dbConnect } from './dbconfig.js';
 
 dotenv.config();
 
