@@ -1,16 +1,21 @@
 import jwt from 'jsonwebtoken';
-import { getUserByEmailOrPhone, createUser, getUserById } from '../models/userModel.js';
+// import {db} from '../dbconfig';
+import { getUserBymobile,getUserByEmail, createUser, getUserById } from '../models/userModel.js';
 
 export const register = async (req, res) => {
-  const { fname, lname, email, mobile, passkey } = req.body;
   try {
-    const existingUser = await getUserByEmailOrPhone(email || mobile);
-    if (existingUser.local) {
+    const { fname, lname, email, mobile, passkey } = req.body;
+    console.log(req.body);
+
+    const existingUser = await getUserByEmail(email);
+    if (existingUser) {
       return res.status(400).json({ message: 'User already exists' });
     }
+
     await createUser(fname, lname, email, mobile, passkey);
     res.status(201).json({ message: 'User registered successfully' });
   } catch (error) {
+    console.error(error);
     res.status(500).json({ message: 'Server error' });
   }
 };
