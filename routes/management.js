@@ -79,7 +79,7 @@ router.post('/login', (req, res) => {
 
     // Authentication successful, generate a JWT token
     const token = jwt.sign(
-      { id: user.m_id, email: user.email },
+      { id: user.m_id, role: user.role },
       JWT_SECRET,
       { expiresIn: '1h' } // Token expires in 1 hour
     )
@@ -94,6 +94,7 @@ router.post('/login', (req, res) => {
         email: user.email,
         mobile: user.mobile,
         picture: user.pfp,
+        role: user.role
       },
     })
   })
@@ -149,5 +150,7 @@ router.put('/profile', authenticateToken, (req, res) => {
     res.json({ message: 'Profile updated successfully' })
   })
 })
+
+
 
 module.exports = router

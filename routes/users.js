@@ -246,7 +246,7 @@ router.put('/profile', authenticateToken, (req, res) => {
 
   const query = `
     UPDATE users 
-    SET fname = ?, lname = ?, status = ?, role = ?, pfp = ?, email = ?
+    SET fname = ?, lname = ?, status = ?, mobile = ?, pfp = ?, email = ?
     WHERE u_id = ?
   `
 
