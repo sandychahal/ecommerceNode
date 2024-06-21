@@ -1,8 +1,8 @@
 const express = require('express')
 const router = express.Router()
-const { aLL, filter } = require('../controller/productsController.js')
+const { all, filter } = require('../controllers/productsController')
 
-router.get('/all', aLL)
+router.get('/all', all)
 router.get('/filter/:id', filter)
 
 module.exports = router

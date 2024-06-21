@@ -1,7 +1,7 @@
 const { getAllProducts } = require('../models/productsModel')
 const { getProductByCategory } = require('../models/productsModel')
 
-const aLL = (req, res) => {
+const all = (req, res) => {
   getAllProducts((err, products) => {
     if (err) {
       res.status(500).json({ message: 'Error fetching products' })
@@ -24,6 +24,6 @@ const filter = (req, res) => {
 }
 
 module.exports = {
-  aLL,
+  all,
   filter,
 }
