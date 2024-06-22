@@ -7,6 +7,7 @@ export const getUserBymobile = (mobile) => {
   if(results.length>0){
     return true;
   }
+  else return false;
 });
 };
 
@@ -16,6 +17,7 @@ export const getUserByEmail = (email) => {
     if(results.length>0){
       return true;
     }
+    else return false;
 });
 };
 
@@ -26,17 +28,21 @@ export const createUser = (fname, lname, email, mobile, passkey) => {
 };
 
 export const getUserById = (u_id) => {
-  const query = 'SELECT * FROM users WHERE u_id = ?';
-  const [rows] = db.query(query, [u_id]);
-  return rows[0];
+  try {
+    const query = 'SELECT * FROM users WHERE u_id = ?';
+    const [rows] = db.query(query, [u_id]);
+    return rows[0];
+  } catch (error) {
+    console.error('Error fetching user by ID:', error);
+    throw error;
+  } 
 };
 
 export const updateUser = (u_id, { fname, lname, email, mobile }) => {
   const query = `
     UPDATE users 
     SET fname = ?, lname = ?, email = ?, mobile = ? 
-    WHERE u_id = ?
-  `;
+    WHERE u_id = ?`;
   db.query(query, [fname, lname, email, mobile, u_id]);
   return getUserById(id);
 };

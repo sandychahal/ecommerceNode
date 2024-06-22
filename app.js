@@ -1,11 +1,7 @@
 import express from 'express';
-// import dotenv from 'dotenv';
 import authRoutes from './routes/authRoutes.js';
 import userRoutes from './routes/userRoutes.js';
 import bodyParser from 'body-parser'
-
-
-// dotenv.config();
 
 const app = express();
 
