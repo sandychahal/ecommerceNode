@@ -1,19 +1,21 @@
 import jwt from 'jsonwebtoken';
-import { getUserBymobile,getUserByEmail, createUser, getUserById } from '../models/userModel.js';
+import { getUserByMobile, getUserByEmail, createUser, getUserById } from '../models/userModel.js';
 
 
-export const register = (req, res) => {
+export const register = async (req, res) => {
   try {
-    if( !fname || !lname || !(email || mobile) || passkey ){
+    const { fname, lname, email, mobile, passkey } = req.body;
+    if( !fname || !lname || (!email && !mobile) || !passkey ){
       return res.status(400).json({ message: 'Please fill all the fields' });
     }
-    const { fname, lname, email, mobile, passkey } = req.body;
-    const existingUserbyemail = getUserByEmail(email);
-    const existingUserbymobile = getUserBymobile(mobile);
-    if (existingUserbyemail) {
+
+    const isExistingEmail = email ? await getUserByEmail(email) : false;
+    const isExistingMobile = mobile ? await getUserByMobile(mobile) : false;
+
+    if (isExistingEmail) {
       return res.status(400).json({ message: 'Entered email already exists' });
     }
-    if (existingUserbymobile) {
+    if (isExistingMobile) {
       return res.status(400).json({ message: 'Entered mobile number already exists' });
     }
    else {
@@ -43,7 +45,7 @@ export const login = (req, res) => {
 
 export const getUser = (req, res) => {
   try {
-    const user = getUserById(req.user.id);
+    const user = getUserById(req.user.u_id);
     res.json(user);
   } catch (error) {
     res.status(500).json({ message: 'Server error' });

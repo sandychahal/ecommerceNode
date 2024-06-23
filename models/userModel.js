@@ -1,30 +1,40 @@
 import md5 from 'md5';
 import db from '../dbconfig.js';
 
-export const getUserBymobile = (mobile) => {
-  const query = 'SELECT * FROM users WHERE  mobile = ?';
-  db.query(query,[mobile],(results) => {  
-  if(results.length>0){
-    return true;
+export const getUserByMobile = async (mobile) => {
+  try {
+    const query = 'SELECT * FROM users WHERE mobile = ?';
+    const [results] = await db.promise().query(query, [mobile]);
+    return results.length > 0;
+  } catch (err) {
+    console.error('Error executing query:', err);
+    throw err;
   }
-  else return false;
-});
 };
 
-export const getUserByEmail = (email) => {
-  const query = 'SELECT * FROM users WHERE email = ?';
-  db.query(query,[email],(results) => {  
-    if(results.length>0){
-      return true;
-    }
-    else return false;
-});
+export const getUserByEmail = async (email) => {
+  try {
+    const query = 'SELECT * FROM users WHERE email = ?';
+    const [results] = await db.promise().query(query, [email]);
+    return results.length > 0;
+  } catch (err) {
+    console.error('Error executing query:', err);
+    throw err;
+  }
 };
 
 export const createUser = (fname, lname, email, mobile, passkey) => {
   const hashedPassword = md5(passkey);
   const query = 'INSERT INTO users (fname, lname, email, mobile, passkey) VALUES (?, ?, ?, ?, ?)';
-  db.query(query, [fname, lname, email, mobile, hashedPassword]);
+  db.query(query, [fname, lname, email, mobile, hashedPassword],(err,results)=>{
+    if(err){
+      console.log('createUser');
+      console.error(err);
+    } else{
+        console.log('createUser');
+        console.log(results);
+      }
+  });
 };
 
 export const getUserById = (u_id) => {
