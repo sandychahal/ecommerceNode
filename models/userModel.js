@@ -18,10 +18,17 @@ const checkUserExists = (email, mobile, callback) => {
 }
 
 const createUser = (fname, lname, email, passkey, mobile, profilePicture, callback) => {
-  const query =
-    'INSERT INTO users (fname, lname, email, passkey, mobile, pfp) VALUES (?, ?, ?, ?, ?, ?)'
-  db.query(query, [fname, lname, email, md5(passkey), mobile, profilePicture], callback)
-}
+  const sql = 'INSERT INTO users (fname, lname, email, passkey, mobile, pfp) VALUES (?, ?, ?, ?, ?, ?)';
+  const values = [fname, lname, email, passkey, mobile, profilePicture];
+  
+  db.query(sql, values, (err, results) => {
+    if (err) {
+      return callback(err);
+    }
+    callback(null, results);
+  });
+};
+
 
 const updateUser = (id, fname, lname, status, mobile, pfp, email, callback) => {
   const query =

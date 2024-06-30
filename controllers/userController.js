@@ -8,18 +8,20 @@ const {
   createUser,
   updateUser,
 } = require('../models/userModel')
-const defaultPfp = 'public/images/default image.jpg'
+const getDefaultProfilePicture = require('../middlewares/defaultPfp')
 
 const JWT_SECRET = 'your_secret_key'
 
 const register = (req, res) => {
-  const { fname, lname, email, passkey, mobile, pfp } = req.body
+  const { fname, lname, email, passkey, mobile } = req.body
+  const pfp = req.file // Get the uploaded file information
 
   if (!fname || !lname || !email || !passkey || !mobile) {
     return res.status(400).json({ error: 'All fields are required' })
   }
 
-  const profilePicture = pfp || defaultPfp;
+  // Use the uploaded file buffer or the default profile picture
+  const profilePicture = pfp ? pfp.buffer : getDefaultProfilePicture()
 
   checkUserExists(email, mobile, (checkErr, checkResults) => {
     if (checkErr) {
@@ -35,7 +37,7 @@ const register = (req, res) => {
       fname,
       lname,
       email,
-      passkey,
+      md5(passkey),
       mobile,
       profilePicture,
       (insertErr, insertResults) => {
@@ -50,7 +52,7 @@ const register = (req, res) => {
           lname,
           email,
           mobile,
-          pfp: profilePicture,
+          pfp: 'Uploaded',
         })
       }
     )
@@ -93,6 +95,7 @@ const login = (req, res) => {
         lname: user.lname,
         email: user.email,
         mobile: user.mobile,
+        pfp: user.pfp,
       },
     })
   })
