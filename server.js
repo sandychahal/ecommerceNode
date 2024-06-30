@@ -5,12 +5,14 @@ const userRoutes = require('./routes/userRoutes')
 const managementRoutes = require('./routes/managementRoutes')
 const productsRoutes = require('./routes/productRoutes')
 const categoryRoutes = require('./routes/categoryRoutes')
+const path = require('path')
 
 const app = express()
 const PORT = process.env.PORT || 3000
 
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
+app.use('/public', express.static(path.join(__dirname, 'public')));
 
 app.use('/users', userRoutes)
 app.use('/management', managementRoutes)

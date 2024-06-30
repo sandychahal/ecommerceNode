@@ -8,15 +8,18 @@ const {
   createUser,
   updateUser,
 } = require('../models/userModel')
+const defaultPfp = 'public/images/default image.jpg'
 
 const JWT_SECRET = 'your_secret_key'
 
 const register = (req, res) => {
-  const { fname, lname, email, passkey, mobile } = req.body
+  const { fname, lname, email, passkey, mobile, pfp } = req.body
 
   if (!fname || !lname || !email || !passkey || !mobile) {
     return res.status(400).json({ error: 'All fields are required' })
   }
+
+  const profilePicture = pfp || defaultPfp;
 
   checkUserExists(email, mobile, (checkErr, checkResults) => {
     if (checkErr) {
@@ -34,6 +37,7 @@ const register = (req, res) => {
       email,
       passkey,
       mobile,
+      profilePicture,
       (insertErr, insertResults) => {
         if (insertErr) {
           console.error('Error inserting user:', insertErr)
@@ -46,6 +50,7 @@ const register = (req, res) => {
           lname,
           email,
           mobile,
+          pfp: profilePicture,
         })
       }
     )
