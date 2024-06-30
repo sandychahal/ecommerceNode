@@ -37,6 +37,15 @@ const add = (req,res)=>{
   const mrp=req.body.mrp 
   const created_by=req.body.created_by
   const updated_by=req.body.updated_by
+  // const w_name=req.body.w_name 
+  // const address=req.body.address
+  // const city=req.body.city
+  // const state=req.body.state
+  // const zipcode=req.body.zipcode
+  // const country=req.body.country
+  // const quantity=req.body.quantity
+  // const mobile=req.body.mobile
+  // const manager=req.body.manager
 
   addProduct(name, cat_id, desc, pfp, cp, sp, mrp, created_by, updated_by, (err, products)=>{
     if (err) {
