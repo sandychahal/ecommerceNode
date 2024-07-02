@@ -77,7 +77,7 @@ const login = (req, res) => {
     }
 
     const token = jwt.sign({ id: user.u_id, role: `user` }, JWT_SECRET, {
-      expiresIn: '1h',
+      expiresIn: '24h',
     })
 
     return res.status(200).json({
