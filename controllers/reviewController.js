@@ -1,5 +1,5 @@
 // const {  } = require('../models/productsModel')
-const {addReview,getAllReview,deleteReview } = require('../models/reviewModel')
+const {addReview,getAllReview,deleteReview, updateReview } = require('../models/reviewModel')
 
 
 
@@ -50,8 +50,29 @@ const del=(req,res)=>{
 
 };
 
+
+
+// updating review
+
+const update = (req, res) => {
+  const r_id = req.query.r_id
+  const review = req.body.review
+  const rating = req.body.rating
+  const updated_by = req.body.updated_by
+
+  updateReview(r_id, review, rating, updated_by, (err, review) => {
+    if (err) {
+      console.log(err)
+      res.status(500).json({ message: 'Error updating products review' })
+    } else {
+      res.json(review)
+    }
+  })
+}
+
 module.exports = {
   add,
   all,
-  del
+  del,
+  update
 }

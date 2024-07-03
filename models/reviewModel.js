@@ -34,8 +34,21 @@ const deleteReview = (r_id, callback) => {
   });
 };
 
+
+const updateReview = (r_id, review, rating, updated_by, callback) => {
+  const query = 'UPDATE reviews SET review = ?, rating = ?, updated_by = ? WHERE r_id = ?'
+  db.query(query, [review, rating, updated_by, r_id], (err, result) => {
+    if (err) {
+      return callback(err)
+    }
+    callback(null, result)
+  });
+};
+
+
   module.exports = {
     addReview,
     getAllReview,
-    deleteReview
+    deleteReview,
+    updateReview
   }
