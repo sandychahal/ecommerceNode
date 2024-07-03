@@ -5,6 +5,7 @@ const userRoutes = require('./routes/userRoutes')
 const managementRoutes = require('./routes/managementRoutes')
 const productsRoutes = require('./routes/productRoutes')
 const categoryRoutes = require('./routes/categoryRoutes')
+const attributeRoutes = require('./routes/attributeRoutes')
 const path = require('path')
 
 const app = express()
@@ -18,7 +19,7 @@ app.use('/users', userRoutes)
 app.use('/management', managementRoutes)
 app.use('/products', productsRoutes)
 app.use('/category', categoryRoutes)
-app.use('/attributes', categoryRoutes)
+app.use('/attributes', attributeRoutes)
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`)

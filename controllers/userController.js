@@ -1,6 +1,7 @@
 // controllers/userController.js
 const jwt = require('jsonwebtoken')
 const md5 = require('md5')
+const crypto = require("crypto")
 const {
   findUserByEmail,
   findUserById,
@@ -52,7 +53,7 @@ const register = (req, res) => {
           lname,
           email,
           mobile,
-          pfp: 'Uploaded',
+          profilePicture,
         })
       }
     )
@@ -87,6 +88,8 @@ const login = (req, res) => {
       expiresIn: '1h',
     })
 
+    const profilePicture = user.pfp ? `data:image/jpeg;base64,${user.pfp.toString('base64')}` : null;
+
     return res.status(200).json({
       token,
       user: {
@@ -95,7 +98,7 @@ const login = (req, res) => {
         lname: user.lname,
         email: user.email,
         mobile: user.mobile,
-        pfp: user.pfp,
+        pfp: profilePicture,
       },
     })
   })
@@ -120,35 +123,37 @@ const getProfile = (req, res) => {
 }
 
 const updateProfile = (req, res) => {
-  const userId = Number(req.user.id)
-  const { fname, lname, status, mobile, pfp, email } = req.body
+  const userId = Number(req.user.id);
+  const { fname, lname, status, mobile, email } = req.body;
+  const pfp = req.file ? req.file.buffer : null; // Get the uploaded file buffer if provided
 
-  if (!fname || !lname || !status || !mobile || !pfp || !email) {
-    return res.status(400).json({ error: 'All fields are required' })
+  if (!fname || !lname || !status || !mobile || !email) {
+    return res.status(400).json({ error: 'All fields are required' });
   }
 
+  // Update user profile including profile picture if provided
   updateUser(
     userId,
     fname,
     lname,
     status,
     mobile,
-    pfp,
     email,
+    pfp, // Pass the profile picture buffer to the updateUser function
     (err, results) => {
       if (err) {
-        console.error('Error updating user data:', err)
-        return res.status(500).json({ error: 'Internal server error' })
+        console.error('Error updating user data:', err);
+        return res.status(500).json({ error: 'Internal server error' });
       }
 
       if (results.affectedRows === 0) {
-        return res.status(404).json({ error: 'User not found' })
+        return res.status(404).json({ error: 'User not found' });
       }
 
-      res.json({ message: 'Profile updated successfully' })
+      res.json({ message: 'Profile updated successfully' });
     }
-  )
-}
+  );
+};
 
 module.exports = {
   register,

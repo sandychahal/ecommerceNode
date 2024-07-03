@@ -13,6 +13,6 @@ const upload = multer({ storage });
 router.post('/register',upload.single("pfp"), register);
 router.post('/login', login);
 router.get('/profile', authenticateToken, getProfile);
-router.put('/profile', authenticateToken, updateProfile);
+router.put('/profile', authenticateToken, upload.single('pfp'), updateProfile);
 
 module.exports = router;
