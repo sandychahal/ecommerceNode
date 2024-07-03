@@ -25,7 +25,7 @@ const getAllReview = (callback) => {
 
 
 const deleteReview = (r_id, callback) => {
-  const query = 'DELETE FROM reviews WHERE r_id = ?'
+  const query = 'UPDATE reviews SET is_deleted = 1 WHERE r_id = ?'
   db.query(query, [r_id], (err, result) => {
     if (err) {
       return callback(err)

@@ -36,17 +36,19 @@ const all=(req,res)=>{
 
 
 // deleting review 
-const del = (req, res) => {
-    const r_id = req.params.r_id
-    console.log(r_id);
-    deleteReview(r_id, (err, review) => {
-      if (err) {
-        res.status(500).json({ message: 'Error deleting review' })
-      } else {
-        res.json({ message: 'Review deleted successfully' })
-      }
-    })
-  }
+const del=(req,res)=>{
+  const r_id=req.body.r_id;
+  console.log(r_id);
+  deleteReview(r_id, (err,review)=>{
+        if (err) {
+            console.log(err);
+            res.status(500).json({ message: 'Error adding products review' })
+        } else {
+            res.json(review)
+        }
+    });
+
+};
 
 module.exports = {
   add,
