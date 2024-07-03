@@ -34,9 +34,9 @@ const storage=multer.diskStorage({
 const upload=multer({storage})
 
 const addProduct=(req,res, name, cat_id, desc, cp, sp, mrp, created_by, updated_by, callback)=>{
-  // if (!name || !cat_id || !desc || !cp || !sp || !mrp || !created_by || !updated_by) {
-  //   return callback(new Error('All fields are required'));
-  // }
+  if (!name || !cat_id || !desc || !cp || !sp || !mrp || !created_by || !updated_by) {
+    return callback(new Error('All fields are required'));
+  }
   upload.single('pfp')(req,res,(err)=>{
     if(err){
       return callback(err);

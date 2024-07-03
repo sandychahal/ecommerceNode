@@ -42,7 +42,7 @@ const del=(req,res)=>{
   deleteReview(r_id, (err,review)=>{
         if (err) {
             console.log(err);
-            res.status(500).json({ message: 'Error adding products review' })
+            res.status(500).json({ message: 'Error deleting products review' })
         } else {
             res.json(review)
         }
