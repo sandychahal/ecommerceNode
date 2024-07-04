@@ -9,8 +9,8 @@ const getAllAttributes = (callback) => {
   })
 }
 
-const getAttributeByType = (id, callback) => {
-  db.query('SELECT * FROM attributes WHERE type = ?', [id], (err, results) => {
+const getAttributeByType = (type, callback) => {
+  db.query('SELECT * FROM attributes WHERE type = ?', [type], (err, results) => {
     if (err) {
       return callback(err)
     }

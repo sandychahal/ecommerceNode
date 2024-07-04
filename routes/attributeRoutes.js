@@ -1,3 +1,5 @@
+// routes/attributesRoutes.js
+
 const express = require('express')
 const router = express.Router()
 const { all, filter, addAttribute, updateAttribute} = require('../controllers/attributeController')
@@ -5,6 +7,6 @@ const { all, filter, addAttribute, updateAttribute} = require('../controllers/at
 router.get('/all', all)
 router.get('/filter', filter)
 router.post('/add',addAttribute)
-router.post('/update/:id', updateAttribute)
+router.put('/update/:value', updateAttribute)
 
 module.exports = router
