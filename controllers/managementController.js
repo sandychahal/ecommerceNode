@@ -12,7 +12,9 @@ const {
 const JWT_SECRET = 'your_secret_key';
 
 const register = (req, res) => {
-  const { fname, lname, email, passkey, role } = req.body;
+
+  const { fname, lname, email, passkey, role, pfp, created_by, updated_by } = req.body;
+
 
   if (!fname || !lname || !email || !passkey || !role) {
     return res.status(400).json({ error: 'All fields are required' });
@@ -28,7 +30,9 @@ const register = (req, res) => {
       return res.status(400).json({ error: 'Email already exists' });
     }
 
-    createManagement(fname, lname, email, passkey, role, (insertErr, insertResults) => {
+
+    createManagement(fname, lname, email, passkey, role,pfp, created_by, updated_by, (insertErr, insertResults) => {
+
       if (insertErr) {
         console.error('Error inserting user:', insertErr);
         return res.status(500).json({ error: 'Internal server error' });

@@ -1,5 +1,6 @@
 const db = require('../config/database')
 
+
 const getAllProducts = (callback) => {
   db.query('SELECT * FROM products', (err, results) => {
     if (err) {
@@ -35,6 +36,9 @@ const checkProductExists = (name, callback) => {
     callback(null, results)
   })
 }
+
+
+// add multer code for pfp in createProduct
 
 const createProduct = (
   name,
@@ -106,11 +110,12 @@ const addUpdatedProduct = (
   )
 }
 
+
 module.exports = {
   getAllProducts,
   getProductByCategory,
   getUniqueProduct,
   checkProductExists,
   createProduct,
-  addUpdatedProduct,
+  addUpdatedProduct
 }

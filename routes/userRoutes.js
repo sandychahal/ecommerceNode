@@ -3,6 +3,8 @@ const express = require('express');
 const router = express.Router();
 const { register, login, getProfile, updateProfile } = require('../controllers/userController');
 const authenticateToken = require('../middlewares/authenticateToken');
+
+// remove multer from here and add as told earlier 
 const multer = require('multer');
 
 const storage = multer.memoryStorage();
@@ -14,5 +16,6 @@ router.post('/register',upload.single("pfp"), register);
 router.post('/login', login);
 router.get('/profile', authenticateToken, getProfile);
 router.put('/profile', authenticateToken, upload.single('pfp'), updateProfile);
+
 
 module.exports = router;

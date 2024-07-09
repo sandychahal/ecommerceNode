@@ -1,3 +1,4 @@
+
 const {
   getProductByCategory,
   checkProductExists,
@@ -6,6 +7,7 @@ const {
   getUniqueProduct,
   addUpdatedProduct
 } = require('../models/productsModel')
+
 
 const all = (req, res) => {
   getAllProducts((err, products) => {
@@ -28,6 +30,7 @@ const filter = (req, res) => {
     }
   })
 }
+
 
 const filterProduct = (req, res) => {
   const id = req.params.id
@@ -163,4 +166,5 @@ module.exports = {
   filterProduct,
   addProduct,
   updateProduct
+
 }

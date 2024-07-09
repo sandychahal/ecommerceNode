@@ -1,6 +1,7 @@
 // middleware/verifyPhoneNumber.js
 
 function isValidPhoneNumber(mobile) {
+
   // Simple regex for validating phone numbers
   const phoneRegex =  /^\d{10}$/;
   return phoneRegex.test(mobile);
@@ -19,3 +20,4 @@ function verifyNumber(req, res, next) {
 }
 
 module.exports = verifyNumber;
+
