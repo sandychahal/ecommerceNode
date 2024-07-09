@@ -1,5 +1,12 @@
-// const {  } = require('../models/productsModel')
-const {getAllProducts, getProductByCategory, addProduct, addReview } = require('../models/productsModel')
+
+const {
+  getProductByCategory,
+  checkProductExists,
+  createProduct,
+  getAllProducts,
+  getUniqueProduct,
+  addUpdatedProduct
+} = require('../models/productsModel')
 
 
 const all = (req, res) => {
@@ -25,55 +32,139 @@ const filter = (req, res) => {
 }
 
 
-// assuming authentication has already been done 
-const add = (req,res)=>{
-  const name=req.body.name 
-  const cat_id=req.body.cat_id 
-  const desc=req.body.desc 
-  const pfp=req.body.pfp 
-  const cp=req.body.cp 
-  const sp=req.body.sp 
-  const mrp=req.body.mrp 
-  const created_by=req.body.created_by
-  const updated_by=req.body.updated_by
-
-  console.log(name, cat_id, desc, cp, sp, mrp, created_by, updated_by);
-
-  addProduct(req, name, cat_id, desc, pfp, cp, sp, mrp, created_by, updated_by, (err, products)=>{
+const filterProduct = (req, res) => {
+  const id = req.params.id
+  console.log(req.params)
+  getUniqueProduct(id, (err, products) => {
     if (err) {
-      console.log(err);
-      return res.status(500).json({ message: 'Error adding products' , error: err})
+      res.status(500).json({ message: 'Error fetching products' })
     } else {
-      res.json({ message: 'Product added successfully', result });
-      // console.log(result);
+      if (products.length == 0) {
+        return res.status(404).json({ message: 'Product not found' })
+      }
+      res.json(products)
     }
   })
-  
-
 }
 
-// adding product review 
-const reviewAdd=(req,res)=>{
-  const p_id=req.body.p_id
-  const u_id=req.body.u_id
-  const review=req.body.review
-  const created_by=req.body.created_by
-  const updated_by=req.body.updated_by
+const addProduct = (req, res) => {
+  const {
+    name,
+    cat_id,
+    desc,
+    pfp,
+    cp,
+    sp,
+    mrp,
+    avg_ratings,
+    avg_reviews,
+    created_by,
+    updated_by,
+  } = req.body
 
-  addReview(p_id,u_id, review, created_by, updated_by, (err,products)=>{
-    if (err) {
-      console.log(err);
-      res.status(500).json({ message: 'Error adding products review' })
-      } else {
-        res.json(products)
+  if (
+    !name ||
+    !cat_id ||
+    !desc ||
+    !pfp ||
+    !cp ||
+    !sp ||
+    !mrp ||
+    !avg_ratings ||
+    !avg_reviews
+  ) {
+    return res.status(400).json({ error: 'All fields are required' })
+  }
+
+  checkProductExists(name, (checkErr, checkResults) => {
+    if (checkErr) {
+      console.error('Error checking existing product:', checkErr)
+      return res.status(500).json({ error: 'Internal server error' })
+    }
+
+    if (checkResults.length > 0) {
+      return res.status(400).json({ error: 'Product already exists' })
+    }
+
+    createProduct(
+      name,
+      cat_id,
+      desc,
+      pfp,
+      cp,
+      sp,
+      mrp,
+      avg_ratings,
+      avg_reviews,
+      created_by,
+      updated_by,
+      (insertErr, insertResults) => {
+        if (insertErr) {
+          console.error('Error inserting user:', insertErr)
+          return res.status(500).json({ error: 'Internal server error' })
+        }
+
+        return res.status(201).json({
+          id: insertResults.insertId,
+          name,
+          cat_id,
+          desc,
+        })
       }
+    )
   })
-
 }
+
+const updateProduct = (req,res) => {
+  const { name, cat_id, desc, pfp, cp, sp, mrp,avg_ratings,avg_reviews,updated_by} = req.body;
+  const id = req.params.id;
+  if (!name || !cat_id || !desc || !pfp || !cp || !sp || !mrp || !avg_ratings || !avg_reviews || !updated_by){
+    return res.status(400).json({ error: 'All fields are required' })
+  }
+  checkProductExists(id, (checkErr, checkResults) => {
+    if (checkErr) {
+      console.error('Error checking existing product:', checkErr)
+      return res.status(500).json({ error: 'Internal server error' })
+    }
+    addUpdatedProduct(
+      id,
+      name,
+      cat_id,
+      desc,
+      pfp,
+      cp,
+      sp,
+      mrp,
+      avg_ratings,
+      avg_reviews,
+      updated_by,
+      (insertErr, insertResults) => {
+        if (insertErr) {
+          console.error('Error inserting user:', insertErr)
+          return res.status(500).json({ error: 'Internal server error' })
+        }
+
+        return res.status(201).json({
+          p_id: id,
+          name,
+          cat_id,
+          desc,
+          pfp,
+          cp,
+          sp,
+          mrp,
+          avg_ratings,
+          avg_reviews,
+          updated_by,
+        })
+})
+})}
 
 module.exports = {
   all,
   filter,
-  add,
-  reviewAdd,
+  filterProduct,
+  addProduct,
+  updateProduct
+
 }

@@ -1,12 +1,14 @@
 const express = require('express')
 const router = express.Router()
-const { all, filter, add, reviewAdd } = require('../controllers/productsController')
-// const authenticateToken = require('../middlewares/authenticateToken');
-const verifyAdmin = require('../middlewares/verifyAdmin');
 
+const { all, filter, filterProduct, addProduct, updateProduct } = require('../controllers/productsController')
+
+// const verifyAdmin = require('../middlewares/verifyAdmin');
+// add this middleware while adding product
 router.get('/all', all)
 router.get('/filter/:id', filter)
-router.post('/add',verifyAdmin, add)
-router.post('/review',reviewAdd);
-
+router.get('/filterProduct/:id',filterProduct)
+router.post('/add',addProduct)
+router.post('/update/:id', updateProduct)
 module.exports = router
+

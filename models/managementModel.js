@@ -17,9 +17,12 @@ const checkManagementExists = (email, callback) => {
   db.query(query, [email], callback);
 };
 
-const createManagement = (fname, lname, email, passkey, role,pfp, created_by, updated_by, callback) => {
-  const query = 'INSERT INTO management (fname, lname, email, passkey, role, pfp, created_by, updated_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
-  db.query(query, [fname, lname, email, md5(passkey), role, pfp, created_by, updated_by], callback);
+
+// please add pfp, created_by, updated_by in createManagement
+const createManagement = (fname, lname, email, passkey, role, callback) => {
+  const query = 'INSERT INTO management (fname, lname, email, passkey, role) VALUES (?, ?, ?, ?, ?)';
+  db.query(query, [fname, lname, email, md5(passkey), role], callback);
+
 };
 
 const updateManagement = (id, fname, lname, status, role, pfp, email, callback) => {
